@@ -1,0 +1,41 @@
+---
+title: "Bouton"
+runtime: shiny
+output: html_document
+---
+
+
+```{r}
+downloadButtonRmd <- function (outputId, label = "Download", class = NULL, ...)  {
+     tags$a(id = outputId, class = paste("btn btn-default shiny-download-link",
+        class), href = "", target = "_blank", download = NA, icon("download"), label, ...)
+ }
+```
+
+
+
+```{r, echo=FALSE}
+
+numericInput("FirstSe", "Select 1", min = 1, max = 100, value = 1)
+numericInput("SecendSe", "Select 2", min = 1, max = 100, value = 1)
+
+downloadButtonRmd("Do1", label = "Download1")
+downloadLink("Do2", label = "Download2")
+
+
+RandomSample <- reactive({  iris  })
+
+output$Do1 <- downloadHandler(filename = function() { return(paste('Example', input$FirstSe, '.csv', sep=''))
+ }, content = function(file) {write.csv(RandomSample(), file)  })
+
+output$Do2 <- downloadHandler(filename = function() { return(paste('Example', input$SecendSe, '.csv', sep=''))
+
+ }, content = function(file) { write.csv(RandomSample(), file) })
+
+
+renderTable({ RandomSample()[(1:input$FirstSe),]  })
+
+renderTable({  RandomSample()[(1:input$SecendSe),]  })
+
+
+ ```
